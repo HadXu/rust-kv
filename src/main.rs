@@ -1,5 +1,6 @@
-extern crate clap;
 use clap::{App, Arg};
+
+mod kv;
 
 fn main() {
     let matches = App::new("KV")
@@ -45,3 +46,4 @@ fn main() {
         _ => panic!("Unrecognized subcommand"),
     }
 }
+
