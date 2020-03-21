@@ -1,46 +1,96 @@
 use std::collections::HashMap;
+use std::sync::Arc;
+use std::fs::{File, create_dir_all};
+use std::io::{self, Seek, SeekFrom, Write};
+use std::path::Path;
+use log::debug;
+use failure::Fail;
+
+#[derive(Debug)]
+struct LogPointer {
+    file: Arc<File>,
+    offset: u64,
+    length: u64,
+}
+
 
 #[derive(Default)]
 pub struct KvStore {
-    map: HashMap<String, String>,
+    dpath: String,
+    // ???
+    index: Option<HashMap<String, LogPointer>>,
+    // ???
+    file: Option<Arc<File>>,
+    // ???
+    uncompacted: u64,
 }
+
+#[derive(Fail, Debug)]
+pub enum KvsError {
+    /// Non-existent key.
+    #[fail(display = "Non-existent key: {}", _0)]
+    NonExistentKey(String),
+    /// An IO error occurred.
+    #[fail(display = "{}", _0)]
+    IoError(#[fail(cause)] io::Error),
+    /// A Bincode error occurred.
+    #[fail(display = "Bincode error: {}", _0)]
+    BincodeError(#[fail(cause)] bincode::Error),
+    /// A SetLoggerError occurred.
+    #[fail(display = "{}", _0)]
+    SetLoggerError(#[fail(cause)] log::SetLoggerError),
+}
+
+impl From<io::Error> for KvsError {
+    fn from(err: io::Error) -> KvsError {
+        KvsError::IoError(err)
+    }
+}
+
+impl From<bincode::Error> for KvsError {
+    fn from(err: bincode::Error) -> KvsError {
+        KvsError::BincodeError(err)
+    }
+}
+
+impl From<log::SetLoggerError> for KvsError {
+    fn from(err: log::SetLoggerError) -> KvsError {
+        KvsError::SetLoggerError(err)
+    }
+}
+
+
+pub type Result<T> = std::result::Result<T, KvsError>;
 
 impl KvStore {
-    pub fn new() -> KvStore {
-        KvStore {
-            map: HashMap::new(),
+    pub fn open(dpath: &Path) -> Result<KvStore> {
+        let dpath_full = dpath.join(".kvs");
+        if !dpath_full.exists() {
+            create_dir_all(&dpath_full)?;
         }
-    }
+        let dpath_str = String::from(
+            dpath_full
+                // 对路径进行规范化
+                .canonicalize()?
+                .to_str()
+                .expect("directory should exist"),
+        );
 
-    pub fn set(&mut self, key: String, value: String) {
-        self.map.insert(key, value);
-    }
+        debug!("Opening KvStore, dpath: '{}'", dpath_str);
 
-    pub fn get(self, key: String) -> Option<String> {
-        self.map.get(&key).cloned()
-    }
-
-    pub fn remove(&mut self, key: String) {
-        self.map.remove(&key);
+        Ok(KvStore {
+            index: None,
+            file: None,
+            dpath: dpath_str,
+            uncompacted: 0,
+        })
     }
 }
+
 
 #[test]
-fn get_non_existent_value() {
-    let mut store = KvStore::new();
-    store.set("key1".to_owned(), "value1".to_owned());
-    assert_eq!(store.get("key2".to_owned()), None);
+fn open() {
+    let mut store = KvStore::open(Path::new(""));
+    assert_eq!(store.unwrap().dpath.as_str(), "/Users/haxu/IdeaProjects/rust-kv/.kvs");
 }
-
-#[test]
-fn remove_key() {
-    let mut store = KvStore::new();
-    store.set("key1".to_owned(), "value1".to_owned());
-    store.remove("key1".to_owned());
-    assert_eq!(store.get("key1".to_owned()), None);
-}
-
-
-
-
 
