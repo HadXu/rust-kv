@@ -9,8 +9,6 @@
 * [collections](https://doc.rust-lang.org/std/collections/)
 * [io](https://doc.rust-lang.org/std/io/)
 
-
-
 ## Project 3: Synchronous client-server networking
 ## Project 4: Concurrency and parallelism
 ## Project 5: Asynchronous programming in Rust
