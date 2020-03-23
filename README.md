@@ -8,6 +8,17 @@
 * [collections](https://doc.rust-lang.org/std/collections/)
 * [io](https://doc.rust-lang.org/std/io/)
 ## Project 3: Synchronous client-server networking(doing)
+
+build a simple server with TCP/IP.
+
+```cargo run --bin kvs-client```
+
+```cargo run --bin kvs-server```
+
+* [serde](https://github.com/serde-rs/serde)
+* [io](https://doc.rust-lang.org/std/io/)
+
+
 ## Project 4: Concurrency and parallelism(to do)
 ## Project 5: Asynchronous programming in Rust(to do)
 
