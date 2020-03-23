@@ -3,7 +3,6 @@ use std::io::{BufReader, BufWriter, Write};
 use serde::{Deserialize, Serialize};
 use serde_json::Deserializer;
 
-
 const DEFAULT_LISTENING_ADDRESS: &str = "127.0.0.1:4000";
 
 
@@ -23,19 +22,19 @@ fn run() {
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
-                println!("new client!");
                 let peer_addr = stream.peer_addr().unwrap();
-
+                println!("new client! {}", peer_addr.ip());
 
                 let reader = BufReader::new(&stream);
                 let mut writer = BufWriter::new(&stream);
 
-                println!("{:?}", peer_addr);
-
                 let req_reader = Deserializer::from_reader(reader).into_iter::<Command>();
-
                 for req in req_reader {
-                    println!("{:?}", req);
+                    match req.unwrap() {
+                        Command { x, y } => {
+                            println!("x={},y={}", x, y)
+                        }
+                    }
                 }
             }
             Err(e) => {}
