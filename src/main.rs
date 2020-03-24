@@ -4,7 +4,25 @@ use kv::{KvsError, KvStore, Result};
 use tempfile::TempDir;
 use std::process::exit;
 
-mod kv;
+use std::thread;
+
+pub mod kv;
+
+
+fn main() {
+    // let temp_dir = TempDir::new().expect("unable to create temporary working directory");
+    // let mut store = KvStore::open(temp_dir.path()).unwrap();
+    //
+    // for id in 0..=10 {
+    //     let key = format!("{}", id);
+    //     let value = format!("{}", id);
+    //     thread::spawn(move || {
+    //         store.set(key.clone(), value.clone())
+    //     });
+    // }
+
+}
+
 
 // fn main() -> Result<()> {
 //

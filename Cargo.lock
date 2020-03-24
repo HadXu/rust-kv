@@ -345,7 +345,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust-kv"
+name = "rust_kv"
 version = "0.1.0"
 dependencies = [
  "bincode",

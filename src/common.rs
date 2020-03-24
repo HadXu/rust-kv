@@ -1,13 +1,6 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Deserializer;
 
-#[derive(Serialize, Deserialize, Debug)]
-struct Command {
-    x: i32,
-    y: i32,
-}
-
-
 #[derive(Debug, Serialize, Deserialize)]
 pub enum Request {
     Get { key: String },
