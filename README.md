@@ -7,7 +7,7 @@
 * [Reading: Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](https://github.com/basho/bitcask/blob/develop/doc/bitcask-intro.pdf)
 * [collections](https://doc.rust-lang.org/std/collections/)
 * [io](https://doc.rust-lang.org/std/io/)
-## Project 3: Synchronous client-server networking(doing)
+## Project 3: Synchronous client-server networking(done)
 
 build a simple server with TCP/IP.
 
